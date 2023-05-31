@@ -77,9 +77,13 @@ mostrarCarrito()
 
 
 function mostrarCarrito() {
-    contenedor_carrito.innerHTML = ""
+    
+    //contenedor_carrito.innerHTML = ""
+    let divContenedor = 
+    document.createElement('div')
+    
     listaCarrito.forEach(producto => {
-
+        divContenedor.innerHTML=
                 `<div class="card mb-3" style="max-width: 540px;">
          <div class="row g-0">
            <div class="col-md-4">
@@ -95,6 +99,8 @@ function mostrarCarrito() {
            </div>
          </div>
         </div>`
+
+        contenedor_carrito.appendChild(divContenedor)
         })
     }
 const btn = document.getElementById("btn")
