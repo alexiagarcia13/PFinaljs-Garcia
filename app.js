@@ -24,7 +24,6 @@ class ProductoController {
         ]
     }
 
-
     mostrarEnDOM(contenedor_productos) {
         //Monstramos los prodcutos en el DOM de manera dinamica
         this.listaProductos.forEach(producto => {
@@ -45,7 +44,6 @@ class ProductoController {
 const controladorProductos = new ProductoController()
 console.log(controladorProductos)
 //controladorProductos.levantarProductos()
-
 
 let listaCarrito = JSON.parse(localStorage.getItem("listacarrito")) || []
 
@@ -75,7 +73,6 @@ controladorProductos.listaProductos.forEach(producto=>{
 
 mostrarCarrito()
 
-
 function mostrarCarrito() {
     
     //contenedor_carrito.innerHTML = ""
@@ -103,7 +100,7 @@ function mostrarCarrito() {
         contenedor_carrito.appendChild(divContenedor)
         })
     }
-    
+
     finalizar_compra.addEventListener("click", () => {
         const montoTotal = calcularTotal();
         Swal.fire({
@@ -125,10 +122,10 @@ function mostrarCarrito() {
       
 //const btn = document.getElementById("btn")
 
-
 //const finalizar_compra = document.getElementById("finalizar_compra")
 //finalizar_compra.addEventListener("click",()=>{
   //  Swal.fire(
     //'Compra realizada con exito',
   //)
 //})
+
