@@ -12,12 +12,7 @@ class Producto {
 }
 class ProductoController {
     constructor() {
-        this.listaProductos = []
-    }
-
-    levantarProductos() {
-        this.listaProductos[
-            
+        this.listaProductos = [
             new Producto(1, "Feyre", 6950, 6, "img/venta/texanas/feyre_choco.jpeg", "Color chocolate", "Texana caña media"),
             new Producto(2, "Feyre", 6950, 8, "img/venta/texanas/feyre_cognac.jpeg", "Color Cognac", "Texana caña media"),
             new Producto(3, "Texas", 6950, 2, "img/venta/texanas/texasbyn.jpeg", "Color Blanco", "Texana caña media"),
@@ -28,6 +23,7 @@ class ProductoController {
             new Producto(8, "Ela", 5500, 6, "img/venta/texanas/tex_sophia.jpeg", "Color Nutria", "Texana caña corta")
         ]
     }
+
 
     mostrarEnDOM(contenedor_productos) {
         //Monstramos los prodcutos en el DOM de manera dinamica
@@ -45,42 +41,46 @@ class ProductoController {
         })
     }
 }
+
 const controladorProductos = new ProductoController()
-controladorProductos.levantarProductos()
+console.log(controladorProductos)
+//controladorProductos.levantarProductos()
 
 
-let listaCarrito;
+let listaCarrito = JSON.parse(localStorage.getItem("listacarrito")) || []
+
+console.log(listaCarrito)
 
 //DOM
 const contenedor_productos = document.getElementById("contenedor_productos")
 const contenedor_carrito = document.getElementById("contenedor_carrito")
 
 //verifico si existe listaCarrito en DOM
-if (localStorage.getItem("listaCarrito")) {
-    let listaCarritoJSON = listaCarrito.localStorage("listaCarrito")
-    listaCarrito = JSON.parse(listaCarritoJSON)
-    //Mostrar en DOM
-} else {
-    listaCarrito = []
-}
+
 controladorProductos.mostrarEnDOM(contenedor_productos)
 
 //Dar eventos
-controladorProductos.listaProductos.forEach(producto => {
-    document.getElementById(`cpu-${producto.id}`)
+controladorProductos.listaProductos.forEach(producto=>{
+    const btnAP =  document.getElementById(`cpu-${producto.id}`)
     btnAP.addEventListener("click", () => {
 
         listaCarrito.push(producto)
 
         //convertir objeto a JSON
-        let listaCarritoJSON = JSON.stringify(listaCarrito)
-        localStorage.setItem("listaCarrito", listaCarritoJSON)
+        //let listaCarritoJSON = JSON.stringify(listaCarrito)
+        localStorage.setItem("listaCarrito", JSON.stringify(listaCarrito))
+        mostrarCarrito()
+    })
+})
 
-        //limpio el contenedor para recorrer todo el arreglo y que no se repita sin querer los productos.
-        contenedor_carrito.innerHTML = ""
-        listaCarrito.forEach(producto => {
-            contenedor_carrito.innerHTML +=
-                ` <div class="card mb-3" style="max-width: 540px;">
+mostrarCarrito()
+
+
+function mostrarCarrito() {
+    contenedor_carrito.innerHTML = ""
+    listaCarrito.forEach(producto => {
+
+                `<div class="card mb-3" style="max-width: 540px;">
          <div class="row g-0">
            <div class="col-md-4">
            <img src="${producto.img}" class="img-fluid rounded-start" alt="${producto.alt}">
@@ -96,9 +96,7 @@ controladorProductos.listaProductos.forEach(producto => {
          </div>
         </div>`
         })
-    })
-})
-
+    }
 const btn = document.getElementById("btn")
 
 const finalizar_compra = document.getElementById("finalizar_compra")
