@@ -33,7 +33,7 @@ class ProductoController {
                 <img src="${producto.img}" class="card-img-top" alt="${producto.alt}">
                 <div class="card-body">
                     <h5 class="card-title">${producto.nombre}</h5>
-                    <p class="card-text">${producto.descripcion}</p>
+                    <p class="card-text">${producto.cantidad}</p>
                     <p class="card-text">Precio: $${producto.precio}</p>
                     <a href="#" id="cpu-${producto.id}" class="btn btn-primary">Agregar al carrito</a>
                 </div>
@@ -103,11 +103,32 @@ function mostrarCarrito() {
         contenedor_carrito.appendChild(divContenedor)
         })
     }
-const btn = document.getElementById("btn")
+    
+    finalizar_compra.addEventListener("click", () => {
+        const montoTotal = calcularTotal();
+        Swal.fire({
+          title: 'Compra realizada con éxito',
+          text: `El precio total de la compra es: $${montoTotal}`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+      });
+      
+      function calcularTotal() {
+        let total = 0;
+        listaCarrito.forEach(producto => {
+          total += producto.precio;
+        });
+        return total;
+      }
+    
+      
+//const btn = document.getElementById("btn")
 
-const finalizar_compra = document.getElementById("finalizar_compra")
-finalizar_compra.addEventListener("click",()=>{
-    Swal.fire(
-    'Compra realizada con exito',
-  )
-})
+
+//const finalizar_compra = document.getElementById("finalizar_compra")
+//finalizar_compra.addEventListener("click",()=>{
+  //  Swal.fire(
+    //'Compra realizada con exito',
+  //)
+//})
