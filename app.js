@@ -1,131 +1,182 @@
 class Producto {
-    constructor(id, nombre, precio, stock, img, alt) {
-        this.id = id
-        this.nombre = nombre
-        this.cantidad = 1
-        this.precio = precio
-        this.stock = stock
-        this.img = img
-        this.descripcion = this.descripcion
-        this.alt = alt
-    }
+  constructor(id, nombre, precio, stock, img, descripcion, alt) {
+    this.id = id;
+    this.nombre = nombre;
+    this.cantidad = 1;
+    this.precio = precio;
+    this.stock = stock;
+    this.img = img;
+    this.descripcion = descripcion;
+    this.alt = alt;
+  }
 }
+
 class ProductoController {
-    constructor() {
-        this.listaProductos = [
-            new Producto(1, "Feyre", 6950, 6, "img/venta/texanas/feyre_choco.jpeg", "Color chocolate", "Texana caña media"),
-            new Producto(2, "Feyre", 6950, 8, "img/venta/texanas/feyre_cognac.jpeg", "Color Cognac", "Texana caña media"),
-            new Producto(3, "Texas", 6950, 2, "img/venta/texanas/texasbyn.jpeg", "Color Blanco", "Texana caña media"),
-            new Producto(4, "Serena", 6950, 4, "img/venta/texanas/tex_serena_camel.jpeg", "Color Camel", "Texana caña media"),
-            new Producto(5, "Texas", 6950, 6, "img/venta/texanas/texas_hielo.jpeg", "Color Hielo", "Texana caña media"),
-            new Producto(6, "Texas", 5500, 5, "img/venta/texanas/texascortas_black.jpeg", "Color Negro", "Texana caña corta "),
-            new Producto(7, "Ela", 5500, 1, "img/venta/texanas/tex_ela_blanca.jpeg", "Color Blanco", "Texana caña corta"),
-            new Producto(8, "Ela", 5500, 6, "img/venta/texanas/tex_sophia.jpeg", "Color Nutria", "Texana caña corta")
-        ]
-    }
+  constructor() {
+    this.listaProductos = [];
+    this.contenedor_productos = document.getElementById("contenedor_productos");
+  }
 
-    mostrarEnDOM(contenedor_productos) {
-        //Monstramos los prodcutos en el DOM de manera dinamica
-        this.listaProductos.forEach(producto => {
-            contenedor_productos.innerHTML += `
-            <div class="card" style="width: 18rem;">
-                <img src="${producto.img}" class="card-img-top" alt="${producto.alt}">
-                <div class="card-body">
-                    <h5 class="card-title">${producto.nombre}</h5>
-                    <p class="card-text">${producto.cantidad}</p>
-                    <p class="card-text">Precio: $${producto.precio}</p>
-                    <a href="#" id="cpu-${producto.id}" class="btn btn-primary">Agregar al carrito</a>
-                </div>
-            </div>`
-        })
-    }
+  async levantar_y_mostrar(controladorCarrito) {
+    const resp = await fetch("productos.json");
+    this.listaProductos = await resp.json();
+
+    this.mostrarEnDOM();
+    this.darEventoClickAProductos(controladorCarrito);
+  }
+
+  mostrarEnDOM() {
+    this.listaProductos.forEach((producto) => {
+      this.contenedor_productos.innerHTML += `
+        <div class="card border-primary" style="width: 18rem;">
+            <img src="${producto.img}" class="card-img-top" alt="${producto.alt}">
+            <div class="card-body">
+                <h5 class="card-title">${producto.nombre}</h5>
+                <p class="card-text">${producto.descripcion}</p>
+                <p class="card-text">Precio: $${producto.precio}</p>
+                <a href="#" id="cpu-${producto.id}" class="btn btn-primary">Añadir al carrito</a>
+            </div>
+        </div>`;
+    });
+  }
+
+  darEventoClickAProductos(controladorCarrito) {
+    this.listaProductos.forEach((producto) => {
+      const btnAP = document.getElementById(`cpu-${producto.id}`);
+      btnAP.addEventListener("click", () => {
+        controladorCarrito.agregar(producto);
+        controladorCarrito.guardarEnStorage();
+        controladorCarrito.mostrarEnDOM();
+        Toastify({
+          text: `${producto.nombre} añadido!`,
+          duration: 3000,
+          gravity: "bottom",
+          position: "right",
+          style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+          },
+        }).showToast();
+      });
+    });
+  }
 }
 
-const controladorProductos = new ProductoController()
-console.log(controladorProductos)
-//controladorProductos.levantarProductos()
+class CarritoController {
+  constructor() {
+    this.precio_total = document.getElementById("precio_total");
+    this.listaCarrito = [];
+    this.contenedor_carrito = document.getElementById("contenedor_carrito");
+  }
 
-let listaCarrito = JSON.parse(localStorage.getItem("listacarrito")) || []
+  calcularTotalYMostrarEnDOM() {
+    let total = this.listaCarrito.reduce(
+      (total, producto) => total + producto.cantidad * producto.precio,
+      0
+    );
+    this.precio_total.innerHTML = `Total a pagar: $${total}`;
+  }
 
-console.log(listaCarrito)
+  verificarSiExisteElProducto(producto) {
+    return this.listaCarrito.find((elproducto) => elproducto.id === producto.id);
+  }
 
-//DOM
-const contenedor_productos = document.getElementById("contenedor_productos")
-const contenedor_carrito = document.getElementById("contenedor_carrito")
+  agregar(producto) {
+    let objeto = this.verificarSiExisteElProducto(producto);
 
-//verifico si existe listaCarrito en DOM
-
-controladorProductos.mostrarEnDOM(contenedor_productos)
-
-//Dar eventos
-controladorProductos.listaProductos.forEach(producto=>{
-    const btnAP =  document.getElementById(`cpu-${producto.id}`)
-    btnAP.addEventListener("click", () => {
-
-        listaCarrito.push(producto)
-
-        //convertir objeto a JSON
-        //let listaCarritoJSON = JSON.stringify(listaCarrito)
-        localStorage.setItem("listaCarrito", JSON.stringify(listaCarrito))
-        mostrarCarrito()
-    })
-})
-
-mostrarCarrito()
-
-function mostrarCarrito() {
-    
-    //contenedor_carrito.innerHTML = ""
-    let divContenedor = 
-    document.createElement('div')
-    
-    listaCarrito.forEach(producto => {
-        divContenedor.innerHTML=
-                `<div class="card mb-3" style="max-width: 540px;">
-         <div class="row g-0">
-           <div class="col-md-4">
-           <img src="${producto.img}" class="img-fluid rounded-start" alt="${producto.alt}">
-           </div>
-           <div class="col-md-8">
-            <div class="card-body">
-             <h5 class="card-title">${producto.nombre}</h5>
-             <p class="card-text">Precio: $${producto.precio}</p>
-             <p class="card-text">Cantidad: ${producto.cantidad}</p>
-             <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-            </div>
-           </div>
-         </div>
-        </div>`
-
-        contenedor_carrito.appendChild(divContenedor)
-        })
+    if (objeto) {
+      objeto.cantidad += 1;
+    } else {
+      this.listaCarrito.push(producto);
     }
+  }
 
-    finalizar_compra.addEventListener("click", () => {
-        const montoTotal = calcularTotal();
-        Swal.fire({
-          title: 'Compra realizada con éxito',
-          text: `El precio total de la compra es: $${montoTotal}`,
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
-        });
+  limpiarCarritoEnStorage() {
+    localStorage.removeItem("listaCarrito");
+  }
+
+  guardarEnStorage() {
+    let listaCarritoJSON = JSON.stringify(this.listaCarrito);
+    localStorage.setItem("listaCarrito", listaCarritoJSON);
+  }
+
+  verificarExistenciaEnStorage() {
+    this.listaCarrito =
+      JSON.parse(localStorage.getItem("listaCarrito")) || [];
+    if (this.listaCarrito.length > 0) {
+      this.mostrarEnDOM();
+    }
+  }
+
+  limpiarContenedor_Carrito() {
+    this.contenedor_carrito.innerHTML = "";
+  }
+
+  borrar(producto) {
+    let posicion = this.listaCarrito.findIndex(
+      (miProducto) => producto.id === miProducto.id
+    );
+
+    if (posicion !== -1) {
+      this.listaCarrito.splice(posicion, 1);
+    }
+  }
+
+  mostrarEnDOM() {
+    this.limpiarContenedor_Carrito();
+    this.listaCarrito.forEach((producto) => {
+      this.contenedor_carrito.innerHTML += `
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                <img src="${producto.img}" class="img-fluid rounded-start" alt="${producto.alt}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">${producto.nombre}</h5>
+                        <p class="card-text">Descripcion: ${producto.descripcion}</p>
+                        <p class="card-text">Precio: $${producto.precio}</p>
+                        <p class="card-text">Cantidad: ${producto.cantidad}</p>
+                        <button id="borrar-${producto.id}" class="btn btn-danger">Borrar </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    });
+
+    this.listaCarrito.forEach((producto) => {
+      const btnBorrar = document.getElementById(`borrar-${producto.id}`);
+
+      btnBorrar.addEventListener("click", () => {
+        this.borrar(producto);
+        this.guardarEnStorage();
+        this.mostrarEnDOM();
       });
-      
-      function calcularTotal() {
-        let total = 0;
-        listaCarrito.forEach(producto => {
-          total += producto.precio;
-        });
-        return total;
-      }
-    
-      
-//const btn = document.getElementById("btn")
+    });
 
-//const finalizar_compra = document.getElementById("finalizar_compra")
-//finalizar_compra.addEventListener("click",()=>{
-  //  Swal.fire(
-    //'Compra realizada con exito',
-  //)
-//})
+    this.calcularTotalYMostrarEnDOM();
+  }
+}
 
+const controladorProductos = new ProductoController();
+const controladorCarrito = new CarritoController();
+
+controladorProductos.levantar_y_mostrar(controladorCarrito);
+
+controladorCarrito.verificarExistenciaEnStorage();
+
+const finalizar_compra = document.getElementById("finalizar_compra");
+
+finalizar_compra.addEventListener("click", () => {
+  Swal.fire({
+    position: "center",
+    icon: "success",
+    title: "Compra realizada con éxito!",
+    showConfirmButton: false,
+    timer: 2000,
+  });
+
+  controladorCarrito.limpiarContenedor_Carrito();
+  controladorCarrito.limpiarCarritoEnStorage();
+  controladorCarrito.listaCarrito = [];
+  controladorCarrito.calcularTotalYMostrarEnDOM();
+});

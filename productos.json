@@ -1,0 +1,10 @@
+[
+  {"id":1,"nombre": "Feyre","cantidad":1,"precio":6990, "img":".img/venta/texanas/feyre_choco.jpeg","descripcion":"Texanas caña media","alt":"Color chocolate"},
+  {"id":2,"nombre": "Ela","cantidad":1,"precio":5500,"img":".img/venta/texanas/tex_ela_blanca.jpeg","descripcion":"Texana caña baja","alt":"Color blanco"},
+  {"id":3,"nombre": "Serena","cantidad":1,"precio":6990, "img":".img/venta/texanas/tex_serena_camel.jpeg","descripcion":"Texana caña media","alt":"Color camel"},
+  {"id":4,"nombre": "Sophia","cantidad":1,"precio":5500,"img": ".img/venta/texanas/tex_sophia.jpeg","descripcion":"Texana caña baja","alt":"Color nutria"},
+  {"id":5,"nombre": "Val", "cantidad":1,"precio":5500, "img":".img/venta/texanas/tex_val_chocolate.jpeg","descripcion":"Texana caña baja", "alt":"Color chocolate"},
+  {"id":6,"nombre": "Texas","cantidad":1,"precio":6990, "img":".img/venta/texanas/texas_hielo.jpeg","descripcion":"Texana caña media","alt":"Color hielo"},
+  {"id":7,"nombre": "Texas","cantidad":1,"precio":6990, "img":".img/venta/texanas/texasbyn.jpeg","descripcion":"Texana caña media","alt":"Color Negro"},
+  {"id":8,"nombre": "Texas cortas","cantidad":1,"precio":5500,"img":".img/venta/texanas/texascortas_black.jpeg","descripcion":"Texana caña media","alt":"Color Negro"}
+]
